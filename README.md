@@ -8,15 +8,15 @@ Also it will compress your images before converting them, if you have [image_opt
 
 If you don't need compression, then install will be trivial: just clone the repo.
 
-``` bash
-git clone repo
+```
+git clone https://github.com/shanginn/image2base64.git
 ```
 
 If you want compression too, you'll need to install `image_optim` first: go to their [repo](https://github.com/toy/image_optim) and follow the instructions there. It's pretty straightforward too.
 
 ## Usage
 
-``` bash
+```
 ./i2b64 --help
 
 Usage: i2b64 [options] <images ...>
@@ -40,11 +40,15 @@ You can choose the output types you need with the `-i, -b, -p, -s` flags, if non
 
 To generate `pseudo element` based on `image.png` with compression use this:
 
-`./i2b64 -p image.png`
+```
+./i2b64 -p image.png
+```
 
 An `img` tags from `image0.png`, `image1.png` and `image2.png` *without compression* and with classes use:
 
-`./i2b64 -i -n -c image0.png image1.png image2.png`
+```
+./i2b64 -i -n -c image0.png image1.png image2.png
+```
 
 ## Contacts
 
