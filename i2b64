@@ -1,1 +1,124 @@
-/home/shance/bin/i2b64
+#!/bin/bash
+
+#- Image to base64 command line tool 0.1
+#- Written by Shangin Nikolay ( http://shanginn.ru/ )
+
+help=$(grep "^## " "${BASH_SOURCE[0]}" | cut -c 4-)
+version=$(grep "^#- "  "${BASH_SOURCE[0]}" | cut -c 4-)
+
+if [ $# -lt 1 ]; then
+    echo "$help"
+    exit 1
+fi
+
+NO_OPTIM=false
+IMG_OUT=false
+BG_OUT=false
+PSEUDO=false
+SVG_IMG=false
+IC=false
+
+## Usage: i2b64 [options] <images ...>
+##
+##      -h                      Show help options.
+##      -v                      Print version info.
+##
+
+for i in "$@"; do
+    case $i in
+
+##      -n, --no-imageoptim     Disable image optimising (WARNING: optimising done in place).
+        -n*|--no-imageoptim*)
+            NO_OPTIM=true
+            shift
+        ;;
+
+##      -i, --img               Print '<img />'.
+        -i|--img)
+            IMG_OUT=true
+            shift
+        ;;
+
+##      -b, --bg                Print 'background: ;'. (Default one, if nothing else choosen)
+        -b|--bg)
+            BG_OUT=true
+            shift
+        ;;
+
+##      -p, --pseudo            Print :pseudo-element
+        -p|--pseudo)
+            PSEUDO=true
+            shift
+        ;;
+
+##      -s, --svg-image         Print an SVG <image />
+        -s|--svg-image)
+            SVG_IMG=true
+            shift
+        ;;
+
+##      -c, --include-class     Set class for <img /> and <image /> to filename
+        -c|--include-class)
+            IC=true
+            shift
+        ;;
+
+        -v|--version)
+            echo "$version"
+            exit 0
+        ;;
+        -h|--help)
+            echo "$help"
+            exit 1
+        ;;
+        *)
+            
+        ;;
+    esac
+done
+
+for IMG in "$@"; do
+    echo -e "[F]\t < $IMG"
+    if [ ! -f $IMG ]; then
+        echo -e '[E]\t' "$IMG doesn't exists"
+        continue
+    fi
+
+    # if image_optim installed
+    if ! $NO_OPTIM && hash image_optim 2>/dev/null; then
+        image_optim $IMG
+    fi
+    
+    MIME=`file -i $IMG | awk '{print $2}'`
+    BASE64=`base64 -w0 $IMG`
+    CLASS=`if $IC; then echo class=\"${IMG%.*}\"; else echo ""; fi;`
+
+    declare $(identify $IMG | awk '{split($3,d,"x"); print "WIDTH="d[1]" HEIGHT="d[2]"";}')
+
+    if ! $IMG_OUT && ! $PSEUDO && ! $SVG_IMG || $BG_OUT; then
+        echo -e '[i]\t bg'
+        echo "background: url(\"data:${MIME}base64,${BASE64}\") 0 0 no-repeat;"
+    fi
+
+    if $IMG_OUT; then
+        echo -e '[i]\t img'
+        echo "<img $CLASS width=\"$WIDTH\" height=\"$HEIGHT\" src=\"data:${MIME}base64,${BASE64}\" />"
+    fi
+
+    if $SVG_IMG; then
+        echo -e '[i]\t img'
+        echo "<image $CLASS width=\"$WIDTH\" height=\"$HEIGHT\" xlink:href=\"data:${MIME}base64,${BASE64}\" />"
+    fi
+    
+    if $PSEUDO; then
+        echo -e '[i]\t pseudo'
+        echo ":before {
+            display: block;
+            content: ' ';
+            width: ${WIDTH}px;
+            height: ${HEIGHT}px;
+            background: url(\"data:${MIME}base64,${BASE64}\") 0 0 no-repeat;
+        }"
+    fi
+    echo -e "[i]\t $IMG />"
+done
