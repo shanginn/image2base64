@@ -22,7 +22,7 @@ If you want compression too, you'll need to install `image_optim` first: go to t
 Usage: i2b64 [options] <images ...>
      -h                      Show help options.
      -v                      Print version info.
-     -n, --no-imageoptim     Disable image optimising **(WARNING: optimising done in place)**.
+     -n, --no-imageoptim     Disable image optimising (WARNING: optimising done in place).
      -i, --img               Print '<img  />'.
      -b, --bg                Print 'background: ;'. (Default one, if nothing else choosen)
      -p, --pseudo            Print :pseudo-element
@@ -32,7 +32,7 @@ Usage: i2b64 [options] <images ...>
 
 Please note warning: `image_optim`, as far as I know, do not have option to optimise images on the fly and keep the old ones, so **do backups first**! If you want to disable it, use `-n` option.
 
-`-c` will add `class="*FILENAME*"` to the `<img />` and `<image />` tags.
+`-c` will add `class="FILENAME"` to the `<img />` and `<image />` tags.
 
 You can choose the output types you need with the `-i, -b, -p, -s` flags, if none choosen, it'll be the `backgound` one.
 
@@ -48,4 +48,4 @@ An `img` tags from `image0.png`, `image1.png` and `image2.png` *without compress
 
 ## Contacts
 
-Please feel free to contact me directly, or trough tickets.
+Please feel free to contact me directly, or through tickets.
