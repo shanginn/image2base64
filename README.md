@@ -44,7 +44,7 @@ To generate `pseudo element` based on `image.png` with compression use this:
 
 An `img` tags from `image0.png`, `image1.png` and `image2.png` *without compression* and with classes use:
 
-`./i2b64 -i -n image0.png image1.png image2.png`
+`./i2b64 -i -n -c image0.png image1.png image2.png`
 
 ## Contacts
 
